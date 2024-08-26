@@ -1,12 +1,13 @@
 import Part from "./Part"
 
-const Total = ({parts}) => {
-    let total = 0
-    parts.forEach(part => {
-        total += part.exercises
-    });
+const Total = ({parts}) => {   
+    
+    const total = parts.reduce((sum, part) => {
+        return sum + part.exercises
+    }, 0)
+
     return (
-        <h4>Total of {total} exercises</h4>
+        <h4>Total of {total} exercises </h4>
     )
 }
 
