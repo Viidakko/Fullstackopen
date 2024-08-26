@@ -14,8 +14,16 @@ const Button = ({handleClick, text}) => {
   )
 }
 
-const Statistics = ({good, neutral, bad, all, average, positive}) => (
-  <div>
+const Statistics = ({good, neutral, bad, all, average, positive}) => {
+  if(all === 0) {
+    return (
+      <p>
+        No feedback given
+      </p>
+    )
+  }
+  return (
+    <div>
     <p>Good: {good}</p>
     <p>Neutral: {neutral}</p>
     <p>Bad: {bad}</p>
@@ -23,8 +31,10 @@ const Statistics = ({good, neutral, bad, all, average, positive}) => (
     <p>Average on scale from -1 to 1: {average}</p>
     <p>Positive: {positive} %</p>
   </div>
-)
 
+  )
+}
+  
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
