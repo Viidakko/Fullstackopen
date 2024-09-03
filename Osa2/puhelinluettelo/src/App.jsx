@@ -1,10 +1,7 @@
 import { useState } from 'react'
-
-const Person = ({name, number}) => {
-  return (
-    <p> {name} {number} </p>
-  )
-}
+import Persons from './components/Persons'
+import PersonsForm from './components/PersonForm'
+import Filter from './components/Filter'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -28,10 +25,14 @@ const App = () => {
       window.alert(`${newName} is already added to phonebook`)
       setNewName('')
       setNewNumber('')
+      setNewFilter('')
     } else {
-      setPersons(persons.concat(personObject))
+      const newList = persons.concat(personObject)
+      setPersons(newList)
+      setShowPersons(newList)
       setNewName('')
       setNewNumber('')
+      setNewFilter('')
     }
   }
 
@@ -52,34 +53,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        Filter shown with <input 
-          value={newFilter}
-          onChange={handleFilter}
-        />
-      </div>
+      <Filter filter={newFilter} handleFilter={handleFilter} />
       <h2>Add a new</h2>
-      <form onSubmit={addName}>
-        <div >
-          name: <input 
-            value={newName}
-            onChange={handleText}
-          />
-        </div>
-        <div>
-          number: <input
-            value={newNumber}
-            onChange={handleNumber}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonsForm name={newName} number={newNumber} handleText={handleText} handleNumber={handleNumber} submit={addName}/>
       <h2>Numbers</h2>
-      {showPersons.map(person =>
-          <Person key={person.name} name={person.name} number={person.number}/>
-      )}
+      <Persons persons={showPersons}/>
     </div>
   )
 
