@@ -12,7 +12,6 @@ const App = () => {
   const [showPersons, setShowPersons] = useState(persons)
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
@@ -21,7 +20,6 @@ const App = () => {
         setShowPersons(data)
       })
   }, [])
-  console.log('render', persons.length, 'persons')
 
   const addName = (event) => {
     event.preventDefault()
@@ -36,12 +34,17 @@ const App = () => {
       setNewNumber('')
       setNewFilter('')
     } else {
-      const newList = persons.concat(personObject)
-      setPersons(newList)
-      setShowPersons(newList)
-      setNewName('')
-      setNewNumber('')
-      setNewFilter('')
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(response => {
+          const newList = persons.concat(response.data)
+          setPersons(newList)
+          setShowPersons(newList)
+          setNewName('')
+          setNewNumber('')
+          setNewFilter('')
+        }
+      )
     }
   }
 
