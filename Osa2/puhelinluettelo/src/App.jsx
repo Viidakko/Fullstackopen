@@ -29,16 +29,23 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    if (persons.some(person => person.name === newName)) {
-      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+    if (persons.some(person => person.name === personObject.name)) {
+      if (window.confirm(`${personObject.name} is already added to phonebook, replace the old number with a new one?`)) {
         personService
-          .update(persons.find(p => p.name === newName).id, personObject)
+          .update(persons.find(p => p.name === personObject.name).id, personObject)
           .then(updatedPerson => {
-            setPersons(persons.map(person => person.name !== newName ? person : updatedPerson.data))
-            setShowPersons(persons.map(person => person.name !== newName ? person : updatedPerson.data))
-          }
-        )
-        setShowMessage(`Updated phone number for ${newName}`)
+            setPersons(persons.map(person => person.name !== personObject.name ? person : updatedPerson.data))
+            setShowPersons(persons.map(person => person.name !== personObject.name ? person : updatedPerson.data))
+          })
+          .catch(error => {
+            setErrorMessage(true)
+            setShowMessage(`The person ${personObject.name} has already been removed from the server`)
+            setPersons(persons.filter(p => p.name !== personObject.name))
+            setShowPersons(persons.filter(p => p.name !== personObject.name))
+            setTimeout(() => {setShowMessage(null)} , 5000)
+          })
+        setErrorMessage(false)
+        setShowMessage(`Updated phone number for ${personObject.name}`)
         setTimeout(() => {setShowMessage(null)} , 3000)
       }
       setNewName('')
@@ -54,6 +61,7 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           setNewFilter('')
+          setErrorMessage(false)
           setShowMessage(`Added ${newName}`)
           setTimeout(() => {setShowMessage(null)} , 3000)
         }
@@ -63,15 +71,16 @@ const App = () => {
 
   const deletePerson = (id) => {
     if (window.confirm(`Delete ${persons.find(p => p.id === id).name}?`)) {
+      setErrorMessage(false)
       setShowMessage(`Deleted '${persons.find(p => p.id === id).name}'`)
       setTimeout(() => {setShowMessage(null)} , 3000)
       personService.destroy(id)
         .catch(error => {
-          alert(
-            `the person ${persons.find(p => p.id === id).name} was already deleted from the server`
-          )
+          setErrorMessage(true)
+          setShowMessage(`The person ${persons.find(p => p.id === id).name} was already deleted from the server`)
           setPersons(persons.filter(p => p.id !== id))
           setShowPersons(persons.filter(p => p.id !== id))
+          setTimeout(() => {setShowMessage(null)} , 3000)
         })
       setPersons(persons.filter(p => p.id !== id))
       setShowPersons(persons.filter(p => p.id !== id))
