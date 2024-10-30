@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonsForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter,setNewFilter] = useState('')
   const [showPersons, setShowPersons] = useState(persons)
+  const [showMessage, setShowMessage] = useState(null)
+  const [isErrormessage, setErrorMessage] = useState(false)
 
   useEffect(() => {
     personService
@@ -35,6 +38,8 @@ const App = () => {
             setShowPersons(persons.map(person => person.name !== newName ? person : updatedPerson.data))
           }
         )
+        setShowMessage(`Updated phone number for ${newName}`)
+        setTimeout(() => {setShowMessage(null)} , 3000)
       }
       setNewName('')
       setNewNumber('')
@@ -49,6 +54,8 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           setNewFilter('')
+          setShowMessage(`Added ${newName}`)
+          setTimeout(() => {setShowMessage(null)} , 3000)
         }
       )
     }
@@ -56,6 +63,8 @@ const App = () => {
 
   const deletePerson = (id) => {
     if (window.confirm(`Delete ${persons.find(p => p.id === id).name}?`)) {
+      setShowMessage(`Deleted '${persons.find(p => p.id === id).name}'`)
+      setTimeout(() => {setShowMessage(null)} , 3000)
       personService.destroy(id)
         .catch(error => {
           alert(
@@ -82,10 +91,12 @@ const App = () => {
     setNewFilter(filter)
     setShowPersons(persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())))
   }
+  
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <Notification message={showMessage} error={isErrormessage}/>
       <Filter filter={newFilter} handleFilter={handleFilter} />
       <h2>Add a new</h2>
       <PersonsForm name={newName} number={newNumber} handleText={handleText} handleNumber={handleNumber} submit={addName}/>
