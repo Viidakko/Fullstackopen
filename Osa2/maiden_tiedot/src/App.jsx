@@ -8,22 +8,10 @@ function App() {
   const [newfilter, setFilter] = useState('')
   const [allCountries, setAllCountries] = useState(null)
   const [filtCountries, setFiltCountries] = useState(null)
-  const [country, setCountry] = useState(null)
 
 
   useEffect(() => {
-    if (filtCountries) {
-      if (filtCountries.length === 1) {
-        const newCountry = filtCountries[0]
-        axios
-          .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${newCountry.name.common}`)
-          .then(response => {
-            setCountry(response.data)
-        })
-      } else {
-        setCountry(null)
-      }
-    } else {
+    if (!allCountries) {
       axios
         .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
         .then(response => {
@@ -32,7 +20,7 @@ function App() {
           setFiltCountries(response.data)
       })
     }
-  }, [filtCountries])
+  }, [])
 
   const handleSearch = (event) => {
     const filter = event.target.value
@@ -44,7 +32,6 @@ function App() {
     <div>
       <Filter filter={newfilter} handleFilter={handleSearch}/>
       <Countries countries={filtCountries}/>
-      <Country country={country}/>
     </div>
   )
 }
