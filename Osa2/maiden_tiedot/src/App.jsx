@@ -16,15 +16,18 @@ function App() {
       if (filtCountries.length === 1) {
         const newCountry = filtCountries[0]
         axios
-          .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${newCountry}`)
+          .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${newCountry.name.common}`)
           .then(response => {
             setCountry(response.data)
         })
+      } else {
+        setCountry(null)
       }
     } else {
       axios
         .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
         .then(response => {
+          console.log(Object.values(response.data[12].languages))
           setAllCountries(response.data)
           setFiltCountries(response.data)
       })
@@ -34,7 +37,7 @@ function App() {
   const handleSearch = (event) => {
     const filter = event.target.value
     setFilter(filter)
-    setFiltCountries(allCountries.filter(nextCountry => nextCountry.name.common.toLowercase().includes(filter.toLowerCase())))
+    setFiltCountries(allCountries.filter(nextCountry => nextCountry.name.common.toLowerCase().includes(filter.toLowerCase())))
   }
 
   return (
