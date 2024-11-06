@@ -1,11 +1,26 @@
-import Country from "./Country"
+import { useState, useEffect} from 'react'
+import Country from './Country'
 
-const Countries = ({countries, showCountry}) => {
-
+const Countries = ({countries}) => {
+    const [country, setCountry] = useState(null)
+  
+    useEffect(() => {
+        if (country) {
+            setCountry(null)
+        }
+    }, [countries])
+    const showCountry = (name) => {
+      setCountry(countries.find(c => c.name.official === name))
+    }
+  
     if (countries) {
         if (countries.length === 1) {
+          return (
+              <Country country={countries[0]}/>
+          )
+        } else if (country) {
             return (
-                <Country country={countries[0]}/>
+              <Country country={country}/>
             )
         } else if (countries.length > 10) {
             return (

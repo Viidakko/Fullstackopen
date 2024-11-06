@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
 import Countries from './components/Countries'
-import Country from './components/Country'
 
 function App() {
   const [newfilter, setFilter] = useState('')
@@ -11,16 +10,13 @@ function App() {
 
 
   useEffect(() => {
-    if (!allCountries) {
-      axios
-        .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
-        .then(response => {
-          console.log(Object.values(response.data[12].languages))
-          setAllCountries(response.data)
-          setFiltCountries(response.data)
-      })
-    }
-  }, [])
+    axios
+      .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
+      .then(response => {
+        setAllCountries(response.data)
+        setFiltCountries(response.data)
+    }) 
+  },[])
 
   const handleSearch = (event) => {
     const filter = event.target.value
@@ -31,7 +27,7 @@ function App() {
   return (
     <div>
       <Filter filter={newfilter} handleFilter={handleSearch}/>
-      <Countries countries={filtCountries}/>
+      <Countries countries={filtCountries} />
     </div>
   )
 }
